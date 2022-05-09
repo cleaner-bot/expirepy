@@ -1,6 +1,7 @@
+import pytest
+
 from expirepy import ExpiringDict
 from expirepy.time import default_time_func, default_time_scale
-import pytest
 
 from .timehelper import TimeHelper
 

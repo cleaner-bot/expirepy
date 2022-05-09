@@ -1,7 +1,6 @@
 import time
 import typing
 
-
 TimeCallable = typing.Callable[[], float]
 
 

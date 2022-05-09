@@ -1,7 +1,7 @@
-from collections import deque
 import typing
+from collections import deque
 
-from .time import default_time_func, default_time_scale, TimeCallable
+from .time import TimeCallable, default_time_func, default_time_scale
 
 
 class ExpiringCounter:

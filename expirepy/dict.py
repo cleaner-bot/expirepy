@@ -1,6 +1,6 @@
 import typing
 
-from .time import default_time_func, default_time_scale, TimeCallable
+from .time import TimeCallable, default_time_func, default_time_scale
 
 
 class ExpiringDict:
