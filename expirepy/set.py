@@ -1,8 +1,12 @@
+import typing
+
 from .time import TimeCallable, default_time_func, default_time_scale
 
+T = typing.TypeVar("T")
 
-class ExpiringSet:
-    _dict: dict[str, float]
+
+class ExpiringSet(typing.Generic[T]):
+    _dict: dict[T, float]
     expires: float
 
     def __init__(
@@ -17,18 +21,21 @@ class ExpiringSet:
             self.time_func = time_func  # type: ignore
             self.time_scale = 1 if time_scale is None else time_scale
 
-    def add(self, item):
+    def add(self, item: T):
         now = self.time_func()
         self._dict[item] = now
+
+    def remove(self, item: T):
+        del self._dict[item]
 
     def clear(self):
         self._dict.clear()
 
-    def copy(self):
+    def copy(self) -> set[T]:
         self.evict()
         return set(self._dict.keys())
 
-    def update(self, items):
+    def update(self, items: typing.Iterable[T]):
         now = self.time_func()
         self._dict.update((item, now) for item in items)
 
@@ -42,7 +49,7 @@ class ExpiringSet:
             if now - added_to_set >= ttl:
                 del self._dict[item]
 
-    def __contains__(self, item):
+    def __contains__(self, item: T) -> bool:
         try:
             added_to_set = self._dict[item]
         except KeyError:

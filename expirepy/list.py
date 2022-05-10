@@ -3,9 +3,11 @@ from collections import deque
 
 from .time import TimeCallable, default_time_func, default_time_scale
 
+T = typing.TypeVar("T")
 
-class ExpiringList:
-    _list: typing.Sequence[tuple[float, typing.Any]]
+
+class ExpiringList(typing.Generic[T]):
+    _list: deque[tuple[float, T]]
 
     def __init__(
         self,
@@ -23,26 +25,26 @@ class ExpiringList:
             self.time_func = time_func  # type: ignore
             self.time_scale = 1 if time_scale is None else time_scale
 
-    def append(self, item):
+    def append(self, item: T):
         now = self.time_func()
         self._list.append((now, item))
 
-    def copy(self):
+    def copy(self) -> typing.Sequence[T]:
         self.evict()
         return [x[1] for x in self._list]
 
-    def extend(self, items):
+    def extend(self, items: typing.Sequence[T]):
         now = self.time_func()
         self._list.extend((now, x) for x in items)
 
     def clear(self):
         self._list.clear()
 
-    def count(self, item):
+    def count(self, item: T) -> int:
         self.evict()
         return sum(1 for x in self._list if x[1] == item)
 
-    def remove(self, item):
+    def remove(self, item: T):
         self.evict()
         for exact in self._list:
             if exact[1] == item:

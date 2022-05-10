@@ -1,3 +1,5 @@
+import pytest
+
 from expirepy import ExpiringSet
 from expirepy.time import default_time_func, default_time_scale
 
@@ -19,6 +21,17 @@ def test_update():
         assert es.copy() == {"foo", "bar"}
         es.update(range(5))
         assert es.copy() == {"foo", "bar", 0, 1, 2, 3, 4}
+
+
+def test_remove():
+    with TimeHelper() as th:
+        es = ExpiringSet(3, **th.args())
+        es.add("foo")
+        es.add("bar")
+        es.remove("bar")
+        assert es.copy() == {"foo"}
+        with pytest.raises(KeyError):
+            es.remove("bar")
 
 
 def test_contains():
