@@ -2,9 +2,13 @@ import typing
 
 from .time import TimeCallable, default_time_func, default_time_scale
 
+T = typing.TypeVar("T")
+TK = typing.TypeVar("TK")
+TV = typing.TypeVar("TV")
 
-class ExpiringDict:
-    _dict: dict[typing.Any, tuple[float, typing.Any]]
+
+class ExpiringDict(typing.Generic[TK, TV]):
+    _dict: dict[TK, tuple[float, TV]]
 
     def __init__(
         self, expires: float, time_func: TimeCallable = None, time_scale: int = None
@@ -18,14 +22,14 @@ class ExpiringDict:
             self.time_func = time_func  # type: ignore
             self.time_scale = 1 if time_scale is None else time_scale
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: TK, value: TV):
         try:
             now = self._dict[key][0]
         except KeyError:
             now = self.time_func()
         self._dict[key] = (now, value)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: TK) -> TV:
         added_to_set, value = self._dict[key]
         now = self.time_func()
         ttl = self.expires * self.time_scale
@@ -34,7 +38,7 @@ class ExpiringDict:
             raise KeyError(key)
         return value
 
-    def get(self, key, fallback=None):
+    def get(self, key: TK, fallback: T = None) -> TV | T:
         try:
             added_to_set, value = self._dict[key]
         except KeyError:
@@ -46,7 +50,7 @@ class ExpiringDict:
             return fallback
         return value
 
-    def ttl(self, key):
+    def ttl(self, key: TK) -> float:
         added_to_set = self._dict[key][0]
         now = self.time_func()
         ttl = self.expires * self.time_scale
@@ -58,11 +62,11 @@ class ExpiringDict:
     def clear(self):
         self._dict.clear()
 
-    def copy(self):
+    def copy(self) -> dict[TK, TV]:
         self.evict()
         return {k: v[1] for k, v in self._dict.items()}
 
-    def update(self, dict: dict):
+    def update(self, dict: dict[TK, TV]):
         now = self.time_func()
         self._dict.update((key, (now, value)) for key, value in dict.items())
 
@@ -76,7 +80,7 @@ class ExpiringDict:
             if now - added_to_set >= ttl:
                 del self._dict[item]
 
-    def __contains__(self, key):
+    def __contains__(self, key: TK) -> bool:
         try:
             added_to_set = self._dict[key][0]
         except KeyError:
@@ -88,5 +92,5 @@ class ExpiringDict:
             return False
         return True
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: TK):
         del self._dict[key]
