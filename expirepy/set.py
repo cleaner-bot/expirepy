@@ -25,6 +25,9 @@ class ExpiringSet(typing.Generic[T]):
         now = self.time_func()
         self._dict[item] = now
 
+    def remove(self, item: T):
+        del self._dict[item]
+
     def clear(self):
         self._dict.clear()
 
