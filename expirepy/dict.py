@@ -38,7 +38,15 @@ class ExpiringDict(typing.Generic[TK, TV]):
             raise KeyError(key)
         return value
 
-    def get(self, key: TK, fallback: T = None) -> TV | T:
+    @typing.overload
+    def get(self, key: TK) -> TV | None:
+        ...
+
+    @typing.overload
+    def get(self, key: TK, fallback: T) -> TV | T:
+        ...
+
+    def get(self, key, fallback=None):
         try:
             added_to_set, value = self._dict[key]
         except KeyError:
