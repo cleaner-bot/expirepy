@@ -5,14 +5,14 @@ from .time import TimeCallable, default_time_func, default_time_scale
 
 
 class ExpiringCounter:
-    _list: typing.Sequence[tuple[float, typing.Any]]
+    _list: deque[float]
 
     def __init__(
         self,
         expires: float,
-        maxlen: int = None,
-        time_func: TimeCallable = None,
-        time_scale: int = None,
+        maxlen: int | None = None,
+        time_func: TimeCallable | None = None,
+        time_scale: int | None = None,
     ) -> None:
         self._list = deque(maxlen=maxlen)
         self.expires = expires
@@ -23,15 +23,15 @@ class ExpiringCounter:
             self.time_func = time_func  # type: ignore
             self.time_scale = 1 if time_scale is None else time_scale
 
-    def increase(self):
+    def increase(self) -> None:
         now = self.time_func()
         self._list.append(now)
 
-    def value(self):
+    def value(self) -> int:
         self.evict()
         return len(self._list)
 
-    def evict(self):
+    def evict(self) -> None:
         now = self.time_func()
         ttl = self.expires * self.time_scale
         while self._list and now - self._list[0] >= ttl:
@@ -39,14 +39,14 @@ class ExpiringCounter:
 
 
 class ExpiringSum:
-    _list: typing.Sequence[tuple[float, typing.Any]]
+    _list: deque[tuple[float, typing.Any]]
 
     def __init__(
         self,
         expires: float,
-        maxlen: int = None,
-        time_func: TimeCallable = None,
-        time_scale: int = None,
+        maxlen: int | None = None,
+        time_func: TimeCallable | None = None,
+        time_scale: int | None = None,
     ) -> None:
         self._list = deque(maxlen=maxlen)
         self.expires = expires
@@ -57,15 +57,15 @@ class ExpiringSum:
             self.time_func = time_func  # type: ignore
             self.time_scale = 1 if time_scale is None else time_scale
 
-    def change(self, value=1):
+    def change(self, value: float = 1) -> None:
         now = self.time_func()
         self._list.append((now, value))
 
-    def value(self):
+    def value(self) -> float:
         self.evict()
         return sum(x[1] for x in self._list)
 
-    def evict(self):
+    def evict(self) -> None:
         now = self.time_func()
         ttl = self.expires * self.time_scale
         while self._list and now - self._list[0][0] >= ttl:

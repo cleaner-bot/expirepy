@@ -11,7 +11,10 @@ class ExpiringDict(typing.Generic[TK, TV]):
     _dict: dict[TK, tuple[float, TV]]
 
     def __init__(
-        self, expires: float, time_func: TimeCallable = None, time_scale: int = None
+        self,
+        expires: float,
+        time_func: TimeCallable | None = None,
+        time_scale: int | None = None,
     ) -> None:
         self._dict = {}
         self.expires = expires
@@ -22,7 +25,7 @@ class ExpiringDict(typing.Generic[TK, TV]):
             self.time_func = time_func  # type: ignore
             self.time_scale = 1 if time_scale is None else time_scale
 
-    def __setitem__(self, key: TK, value: TV):
+    def __setitem__(self, key: TK, value: TV) -> None:
         try:
             now = self._dict[key][0]
         except KeyError:
@@ -46,7 +49,7 @@ class ExpiringDict(typing.Generic[TK, TV]):
     def get(self, key: TK, fallback: T) -> TV | T:
         ...
 
-    def get(self, key, fallback=None):
+    def get(self, key: TK, fallback: T | None = None) -> TV | T | None:
         try:
             added_to_set, value = self._dict[key]
         except KeyError:
@@ -67,18 +70,18 @@ class ExpiringDict(typing.Generic[TK, TV]):
             raise KeyError(key)
         return (ttl - now + added_to_set) / self.time_scale
 
-    def clear(self):
+    def clear(self) -> None:
         self._dict.clear()
 
     def copy(self) -> dict[TK, TV]:
         self.evict()
         return {k: v[1] for k, v in self._dict.items()}
 
-    def update(self, dict: dict[TK, TV]):
+    def update(self, dict: dict[TK, TV]) -> None:
         now = self.time_func()
         self._dict.update((key, (now, value)) for key, value in dict.items())
 
-    def evict(self):
+    def evict(self) -> None:
         now = self.time_func()
         ttl = self.expires * self.time_scale
         # need to make a copy or we'd get errors when modifying the dict
@@ -100,5 +103,5 @@ class ExpiringDict(typing.Generic[TK, TV]):
             return False
         return True
 
-    def __delitem__(self, key: TK):
+    def __delitem__(self, key: TK) -> None:
         del self._dict[key]

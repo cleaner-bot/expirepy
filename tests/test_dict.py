@@ -6,25 +6,25 @@ from expirepy.time import default_time_func, default_time_scale
 from .timehelper import TimeHelper
 
 
-def test_set():
+def test_set() -> None:
     with TimeHelper() as th:
-        ed = ExpiringDict(3, **th.args())
+        ed: ExpiringDict[str, str] = ExpiringDict(3, **th.args())
         ed["foo"] = "bar"
         ed["bar"] = "foo"
         assert ed.copy() == {"foo": "bar", "bar": "foo"}
 
 
-def test_update():
+def test_update() -> None:
     with TimeHelper() as th:
-        ed = ExpiringDict(3, **th.args())
+        ed: ExpiringDict[str, str] = ExpiringDict(3, **th.args())
         assert ed.copy() == {}
         ed.update({"foo": "bar", "bar": "foo"})
         assert ed.copy() == {"foo": "bar", "bar": "foo"}
 
 
-def test_get():
+def test_get() -> None:
     with TimeHelper() as th:
-        ed = ExpiringDict(3, **th.args())
+        ed: ExpiringDict[str, str] = ExpiringDict(3, **th.args())
         ed.update({"foo": "bar", "bar": "foo"})
         assert ed["foo"] == "bar"
         assert ed.get("bar") == "foo"
@@ -33,9 +33,9 @@ def test_get():
             ed["test"]
 
 
-def test_expire():
+def test_expire() -> None:
     with TimeHelper() as th:
-        ed = ExpiringDict(3, **th.args())
+        ed: ExpiringDict[str, str] = ExpiringDict(3, **th.args())
         ed["foo"] = "bar"
         ed["bar"] = "foo"
         assert ed.copy() == {"foo": "bar", "bar": "foo"}
@@ -52,9 +52,9 @@ def test_expire():
         assert ed.copy() == {}
 
 
-def test_clear():
+def test_clear() -> None:
     with TimeHelper() as th:
-        ed = ExpiringDict(3, **th.args())
+        ed: ExpiringDict[str, str] = ExpiringDict(3, **th.args())
         ed["foo"] = "bar"
         ed["bar"] = "foo"
         assert ed.copy() == {"foo": "bar", "bar": "foo"}
@@ -62,9 +62,9 @@ def test_clear():
         assert ed.copy() == {}
 
 
-def test_contains():
+def test_contains() -> None:
     with TimeHelper() as th:
-        ed = ExpiringDict(3, **th.args())
+        ed: ExpiringDict[str, str] = ExpiringDict(3, **th.args())
         ed["foo"] = "bar"
         assert "foo" in ed
         assert "bar" not in ed
@@ -72,9 +72,9 @@ def test_contains():
         assert "foo" not in ed
 
 
-def test_delete():
+def test_delete() -> None:
     with TimeHelper() as th:
-        ed = ExpiringDict(3, **th.args())
+        ed: ExpiringDict[str, str] = ExpiringDict(3, **th.args())
         ed["foo"] = "bar"
         ed["bar"] = "foo"
         assert ed.copy() == {"foo": "bar", "bar": "foo"}
@@ -82,9 +82,9 @@ def test_delete():
         assert ed.copy() == {"bar": "foo"}
 
 
-def test_ttl():
+def test_ttl() -> None:
     with TimeHelper() as th:
-        ed = ExpiringDict(3, **th.args())
+        ed: ExpiringDict[str, str] = ExpiringDict(3, **th.args())
         ed["foo"] = "bar"
         assert ed.ttl("foo") == 3
         th.advance(1)
@@ -96,7 +96,7 @@ def test_ttl():
             ed.ttl("foo")
 
 
-def test_default():
-    ed = ExpiringDict(3)
+def test_default() -> None:
+    ed: ExpiringDict[str, str] = ExpiringDict(3)
     assert ed.time_func == default_time_func
     assert ed.time_scale == default_time_scale

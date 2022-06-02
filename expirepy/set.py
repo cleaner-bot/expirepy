@@ -10,7 +10,10 @@ class ExpiringSet(typing.Generic[T]):
     expires: float
 
     def __init__(
-        self, expires: float, time_func: TimeCallable = None, time_scale: int = None
+        self,
+        expires: float,
+        time_func: TimeCallable | None = None,
+        time_scale: int | None = None,
     ) -> None:
         self._dict = {}
         self.expires = expires
@@ -21,25 +24,25 @@ class ExpiringSet(typing.Generic[T]):
             self.time_func = time_func  # type: ignore
             self.time_scale = 1 if time_scale is None else time_scale
 
-    def add(self, item: T):
+    def add(self, item: T) -> None:
         now = self.time_func()
         self._dict[item] = now
 
-    def remove(self, item: T):
+    def remove(self, item: T) -> None:
         del self._dict[item]
 
-    def clear(self):
+    def clear(self) -> None:
         self._dict.clear()
 
     def copy(self) -> set[T]:
         self.evict()
         return set(self._dict.keys())
 
-    def update(self, items: typing.Iterable[T]):
+    def update(self, items: typing.Iterable[T]) -> None:
         now = self.time_func()
         self._dict.update((item, now) for item in items)
 
-    def evict(self):
+    def evict(self) -> None:
         now = self.time_func()
         ttl = self.expires * self.time_scale
         # need to make a copy or we'd get errors when modifying the dict

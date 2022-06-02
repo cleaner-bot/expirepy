@@ -6,26 +6,26 @@ from expirepy.time import default_time_func, default_time_scale
 from .timehelper import TimeHelper
 
 
-def test_add():
+def test_add() -> None:
     with TimeHelper() as th:
-        es = ExpiringSet(3, **th.args())
+        es: ExpiringSet[str] = ExpiringSet(3, **th.args())
         es.add("foo")
         es.add("bar")
         assert es.copy() == {"foo", "bar"}
 
 
-def test_update():
+def test_update() -> None:
     with TimeHelper() as th:
-        es = ExpiringSet(3, **th.args())
+        es: ExpiringSet[str] = ExpiringSet(3, **th.args())
         es.update(["foo", "bar"])
         assert es.copy() == {"foo", "bar"}
-        es.update(range(5))
+        es.update(map(str, range(5)))
         assert es.copy() == {"foo", "bar", 0, 1, 2, 3, 4}
 
 
-def test_remove():
+def test_remove() -> None:
     with TimeHelper() as th:
-        es = ExpiringSet(3, **th.args())
+        es: ExpiringSet[str] = ExpiringSet(3, **th.args())
         es.add("foo")
         es.add("bar")
         es.remove("bar")
@@ -34,9 +34,9 @@ def test_remove():
             es.remove("bar")
 
 
-def test_contains():
+def test_contains() -> None:
     with TimeHelper() as th:
-        es = ExpiringSet(3, **th.args())
+        es: ExpiringSet[str] = ExpiringSet(3, **th.args())
         es.update(["foo", "bar"])
 
         assert "foo" in es
@@ -46,18 +46,18 @@ def test_contains():
         assert "foo" not in es
 
 
-def test_clear():
+def test_clear() -> None:
     with TimeHelper() as th:
-        es = ExpiringSet(3, **th.args())
+        es: ExpiringSet[str] = ExpiringSet(3, **th.args())
         es.update(["foo", "bar"])
         assert es.copy() == {"foo", "bar"}
         es.clear()
         assert es.copy() == set()
 
 
-def test_expire():
+def test_expire() -> None:
     with TimeHelper() as th:
-        es = ExpiringSet(3, **th.args())
+        es: ExpiringSet[str] = ExpiringSet(3, **th.args())
         es.add("foo")
         es.add("bar")
         assert es.copy() == {"foo", "bar"}
@@ -69,7 +69,7 @@ def test_expire():
         assert es.copy() == set()
 
 
-def test_default():
-    es = ExpiringSet(3)
+def test_default() -> None:
+    es: ExpiringSet[str] = ExpiringSet(3)
     assert es.time_func == default_time_func
     assert es.time_scale == default_time_scale

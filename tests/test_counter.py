@@ -4,7 +4,7 @@ from expirepy.time import default_time_func, default_time_scale
 from .timehelper import TimeHelper
 
 
-def test_increase():
+def test_increase() -> None:
     with TimeHelper() as th:
         ec = ExpiringCounter(3, **th.args())
         assert ec.value() == 0
@@ -16,7 +16,7 @@ def test_increase():
         assert ec.value() == 3
 
 
-def test_expire():
+def test_expire() -> None:
     with TimeHelper() as th:
         ec = ExpiringCounter(3, **th.args())
         assert ec.value() == 0
@@ -36,7 +36,7 @@ def test_expire():
         assert ec.value() == 0
 
 
-def test_default():
+def test_default() -> None:
     ec = ExpiringCounter(3)
     assert ec.time_func == default_time_func
     assert ec.time_scale == default_time_scale
