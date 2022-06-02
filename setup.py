@@ -2,7 +2,7 @@ from setuptools import find_namespace_packages, setup  # type: ignore
 
 setup(
     name="expirepy",
-    version="0.2.0",
+    version="0.2.1",
     url="https://github.com/cleaner-bot/expire.py",
     author="Leo Developer",
     author_email="git@leodev.xyz",
