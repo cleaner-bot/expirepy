@@ -20,7 +20,7 @@ def test_update() -> None:
         es.update(["foo", "bar"])
         assert es.copy() == {"foo", "bar"}
         es.update(map(str, range(5)))
-        assert es.copy() == {"foo", "bar", 0, 1, 2, 3, 4}
+        assert es.copy() == {"foo", "bar", "0", "1", "2", "3", "4"}
 
 
 def test_remove() -> None:

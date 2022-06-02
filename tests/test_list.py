@@ -18,7 +18,7 @@ def test_extend() -> None:
         el.extend(["foo", "bar"])
         assert el.copy() == ["foo", "bar"]
         el.extend(map(str, range(5)))
-        assert el.copy() == ["foo", "bar", 0, 1, 2, 3, 4]
+        assert el.copy() == ["foo", "bar", "0", "1", "2", "3", "4"]
 
 
 def test_clear() -> None:
