@@ -20,7 +20,7 @@ class ExpiringCounter:
             self.time_func = default_time_func
             self.time_scale = default_time_scale if time_scale is None else time_scale
         else:
-            self.time_func = time_func  # type: ignore
+            self.time_func = time_func
             self.time_scale = 1 if time_scale is None else time_scale
 
     def increase(self) -> None:
@@ -54,7 +54,7 @@ class ExpiringSum:
             self.time_func = default_time_func
             self.time_scale = default_time_scale if time_scale is None else time_scale
         else:
-            self.time_func = time_func  # type: ignore
+            self.time_func = time_func
             self.time_scale = 1 if time_scale is None else time_scale
 
     def change(self, value: float = 1) -> None:

@@ -22,7 +22,7 @@ class ExpiringDict(typing.Generic[TK, TV]):
             self.time_func = default_time_func
             self.time_scale = default_time_scale if time_scale is None else time_scale
         else:
-            self.time_func = time_func  # type: ignore
+            self.time_func = time_func
             self.time_scale = 1 if time_scale is None else time_scale
 
     def __setitem__(self, key: TK, value: TV) -> None:
