@@ -1,4 +1,3 @@
-import typing
 from collections import deque
 
 from .time import TimeCallable, default_time_func, default_time_scale
