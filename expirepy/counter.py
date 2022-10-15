@@ -39,7 +39,7 @@ class ExpiringCounter:
 
 
 class ExpiringSum:
-    _list: deque[tuple[float, typing.Any]]
+    _list: deque[tuple[float, float]]
 
     def __init__(
         self,
